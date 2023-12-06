@@ -16,10 +16,17 @@ import java.util.Optional;
 @Controller
 public class UserController {
 
-    public UserService userService;
+    private final UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    @PostMapping("/users/")
+    public ResponseEntity<User> AddUser(@RequestBody User user){
+        System.out.println(user.getFirstName());
+        Boolean response = userService.AddUser(user);
+        return response ?  new ResponseEntity<>(user, HttpStatus.OK): new ResponseEntity<>(user, HttpStatus.BAD_REQUEST) ;
+    }
 
 
     @GetMapping("/users/")
@@ -28,11 +35,6 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping("/Users/")
-    public ResponseEntity<User> AddUser(User user){
-        userService.AddUser(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 
     @DeleteMapping ("/users/{id}/")
     public ResponseEntity<Void> DeleteUser(@PathVariable Integer id){
@@ -43,16 +45,15 @@ public class UserController {
 
 
     @PutMapping("/users/{id}/")
-    public ResponseEntity<User> Updateser(@PathVariable Integer id){
-        User user = userService.getUserById(id);
-        userService.updateUser(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<User> UpdateUser(@RequestBody User userreq){
+        userService.updateUser(userreq);
+        return new ResponseEntity<>(userreq, HttpStatus.OK);
     }
 
 
     @GetMapping("/users/{id}/")
     public ResponseEntity<Optional<User>> getuser(@PathVariable Integer id){
-        Optional<User> findUser = userRepository.findById(id);
+        Optional<User> findUser = Optional.ofNullable(userService.getUserById(id));
         return new ResponseEntity<>(findUser, HttpStatus.OK);
     }
 

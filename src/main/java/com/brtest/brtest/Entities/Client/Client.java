@@ -18,6 +18,7 @@ public class Client {
     @Column(unique = true)
     private String mail;
 
+    private String password;
 
 
 

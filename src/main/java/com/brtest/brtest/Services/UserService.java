@@ -9,25 +9,17 @@ import org.springframework.stereotype.Service;
 import javax.sound.midi.Track;
 import java.security.cert.TrustAnchor;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
-    public final UserRepository userRepository;
+    public  UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-
-
-
-
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
     public User getUserById(int Id){
         return userRepository.findById(Id).orElse(null);
     }
@@ -43,12 +35,8 @@ public class UserService {
     }
 
     public Boolean AddUser(User user) {
-        try {
-            userRepository.save(user);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        userRepository.saveAndFlush(user);
+        return true;
     }
 
 
